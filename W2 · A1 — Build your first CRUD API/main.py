@@ -46,7 +46,7 @@ async def add_task(task_data: TaskCreate):
     if not title:
         raise HTTPException(status_code=400, detail="Title cannot be empty")
     
-    new_id = (tasks[-1]["id"] + 1) if tasks else 1
+    new_id = max((t["id"] for t in tasks), default=0) + 1
     new_task = {"id": new_id, "title": title, "done": False}
     tasks.append(new_task)
     return new_task
@@ -78,4 +78,4 @@ async def delete_task(task_id: int):
         raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
     
     tasks.remove(task)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
